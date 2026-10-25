@@ -30,7 +30,25 @@ func Scan() {
 			}
 			fmt.Printf("  Manufacturer 0x%04X - %s\n    Data: % X\n", data.CompanyID, name, data.Data)
 		}
+		for i, data := range result.ServiceData() {
+			ser, ok := ServiceData(data.UUID.Get16Bit())
+			if !ok {
+				ser = service{Id: "unknown", Name: "UNKNOWN"}
+			}
+			fmt.Printf("  Service %d - Name: %s - ID: %s\n    Data: % X\n", i, ser.Name, ser.Id, data.Data)
+		}
+		for i, data := range result.ServiceUUIDs() {
+			serviceStr := ""
+			if data.Is16Bit() {
+				ser, ok := ServiceData(data.Get16Bit())
+				if ok {
+					serviceStr = fmt.Sprintf(" - Name: %s - Id: %s", ser.Name, ser.Id)
+				}
+			}
+			fmt.Printf("  Service Class %d - UUID %s%s\n", i, data.String(), serviceStr)
+		}
 		fmt.Printf("  Raw advertisment bytes: % X\n", result.Bytes())
+		fmt.Println()
 	})
 	if err != nil {
 		log.Fatalf("Failed to BT scan: %w", err)
