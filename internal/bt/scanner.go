@@ -23,7 +23,13 @@ func Scan() {
 	println("scanning...")
 	err := adapter.Scan(func(adapter *bt.Adapter, result bt.ScanResult) {
 		fmt.Printf("Found device: %s %d %s\n", result.Address.String(), result.RSSI, result.LocalName())
-		fmt.Printf("")
+		for _, data := range result.ManufacturerData() {
+			name, ok := ManufacturerName(data.CompanyID)
+			if !ok {
+				name = "UNKNOWN"
+			}
+			fmt.Printf("  Manufacturer 0x%04X - %s\n    Data: % X\n", data.CompanyID, name, data.Data)
+		}
 		fmt.Printf("  Raw advertisment bytes: % X\n", result.Bytes())
 	})
 	if err != nil {

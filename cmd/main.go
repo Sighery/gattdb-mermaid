@@ -1,23 +1,13 @@
 package main
 
 import (
-	"tinygo.org/x/bluetooth"
+	"os"
+
+	"github.com/Sighery/gattdb-mermaid/internal/bt"
 )
 
-var adapter = bluetooth.DefaultAdapter
-
 func main() {
-	must("enable BLE stack", adapter.Enable())
-
-	println("scanning...")
-	err := adapter.Scan(func(adapter *bluetooth.Adapter, device bluetooth.ScanResult) {
-		println("found device:", device.Address.String(), device.RSSI, device.LocalName())
-	})
-	must("start scan", err)
-}
-
-func must(action string, err error) {
-	if err != nil {
-		panic("failed to " + action + ": " + err.Error())
+	if len(os.Args) >= 2 && os.Args[1] == "scan" {
+		bt.Scan()
 	}
 }

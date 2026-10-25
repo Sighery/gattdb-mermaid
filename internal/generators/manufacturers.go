@@ -64,7 +64,7 @@ func writeManufacturers(manufacturers []manufacturer, wr io.Writer) {
 	tmpl := template.Must(template.New("t").Funcs(funcMap).Parse(MANUFACTURERS_TEMPLATE))
 
 	if err := tmpl.Execute(wr, manufacturers); err != nil {
-		log.Fatalf("Error writing template to manufacturers.go file: %w", err)
+		log.Fatalf("Error writing manufacturers template: %w", err)
 	}
 }
 
@@ -78,8 +78,6 @@ func generateManufacturers() {
 	defer f.Close()
 
 	w := bufio.NewWriter(f)
-
 	writeManufacturers(manufacturers, w)
-
 	w.Flush()
 }
